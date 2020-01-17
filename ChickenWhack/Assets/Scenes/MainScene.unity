@@ -33,7 +33,7 @@ RenderSettings:
   m_HaloTexture: {fileID: 0}
   m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
   m_DefaultReflectionMode: 0
-  m_DefaultReflectionResolution: 128
+  m_DefaultReflectionResolution: 16
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
@@ -1920,36 +1920,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 522811750}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a879e317c20b0d41a9a56f1a97f4cf8, type: 3}
+  m_Script: {fileID: 11500000, guid: d901ddf32d7c84ed4b0f84623ef3a7a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ApplyMethod: 0
-  SampleCount: 1
-  PerPixelNormals: 0
-  Intensity: 0.7
-  Tint: {r: 0, g: 0, b: 0, a: 1}
-  Radius: 3
-  PowerExponent: 1.5
-  Bias: 0.25
-  Thickness: 0.5
-  Downsample: 0
-  CacheAware: 1
-  FadeEnabled: 0
-  FadeStart: 100
-  FadeLength: 50
-  FadeToIntensity: 0
-  FadeToTint: {r: 0, g: 0, b: 0, a: 1}
-  FadeToRadius: 2
-  FadeToPowerExponent: 1
-  FadeToThickness: 1
-  BlurEnabled: 1
-  BlurRadius: 3
-  BlurPasses: 2
-  BlurSharpness: 10
-  FilterEnabled: 0
-  FilterDownsample: 0
-  FilterBlending: 0
-  FilterResponse: 1
+  _intensity: 2
+  _radius: 1.2
+  _sampleCount: 0
+  _sampleCountValue: 24
+  _downsampling: 0
+  _occlusionSource: 0
+  _ambientOnly: 0
+  _aoShader: {fileID: 4800000, guid: 7541b5f18b1224a81927d8b1184b122b, type: 3}
+  _quadMesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!20 &522811754
 Camera:
   m_ObjectHideFlags: 0
@@ -2320,7 +2302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeLimit: 300
-  chickenAmount: 15
+  chickenAmount: 10
   chickenManager: {fileID: 622281741}
   playerController: {fileID: 1990599758}
   gameplayUI: {fileID: 1069926075}
@@ -2574,13 +2556,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 711814056}
-  m_LocalRotation: {x: 0.20532098, y: 0.32734707, z: -0.32323387, w: 0.8638328}
+  m_LocalRotation: {x: 0.65990424, y: 0.27226764, z: 0.2540205, w: 0.6525874}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 962241113}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 34.496002, y: 31.678001, z: -30.963001}
+  m_LocalEulerAnglesHint: {x: 133.7, y: -88.40698, z: -90}
 --- !u!108 &711814058
 Light:
   m_ObjectHideFlags: 0
@@ -4660,36 +4642,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1379433281}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a879e317c20b0d41a9a56f1a97f4cf8, type: 3}
+  m_Script: {fileID: 11500000, guid: d901ddf32d7c84ed4b0f84623ef3a7a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ApplyMethod: 0
-  SampleCount: 1
-  PerPixelNormals: 0
-  Intensity: 0.7
-  Tint: {r: 0, g: 0, b: 0, a: 1}
-  Radius: 3
-  PowerExponent: 1.5
-  Bias: 0.25
-  Thickness: 0.5
-  Downsample: 0
-  CacheAware: 1
-  FadeEnabled: 0
-  FadeStart: 100
-  FadeLength: 50
-  FadeToIntensity: 0
-  FadeToTint: {r: 0, g: 0, b: 0, a: 1}
-  FadeToRadius: 2
-  FadeToPowerExponent: 1
-  FadeToThickness: 1
-  BlurEnabled: 1
-  BlurRadius: 3
-  BlurPasses: 2
-  BlurSharpness: 10
-  FilterEnabled: 0
-  FilterDownsample: 0
-  FilterBlending: 0
-  FilterResponse: 1
+  _intensity: 2
+  _radius: 1.2
+  _sampleCount: 0
+  _sampleCountValue: 24
+  _downsampling: 0
+  _occlusionSource: 0
+  _ambientOnly: 0
+  _aoShader: {fileID: 4800000, guid: 7541b5f18b1224a81927d8b1184b122b, type: 3}
+  _quadMesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &1387177358 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4931211907768612, guid: e88b7bb02ae149940a5a0cddf34fe370,
