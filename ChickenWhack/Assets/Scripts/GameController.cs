@@ -49,7 +49,7 @@ public class GameController : MonoBehaviour
         loseCoroutine = this.DelayedAction(Lose, timeLimit);
 
         var ar = FindObjectOfType<UnityEngine.XR.ARFoundation.ARSessionOrigin>();
-        ar.MakeContentAppearAt(gameplayObjects.transform, Vector3.zero, Quaternion.identity);
+        ar?.MakeContentAppearAt(gameplayObjects.transform, Vector3.zero, Quaternion.identity);
     }
 
     public void StopGameplay()

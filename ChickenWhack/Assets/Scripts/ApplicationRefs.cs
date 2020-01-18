@@ -33,11 +33,9 @@ public static class ApplicationController
 
         ApplicationController.refs = refs;
 
+        StartCoroutine(InitializationCoroutine());
+
         refs.menuController.Open();
-
-        refs.StartCoroutine(CalibrateSettings());
-
-        refs.StartCoroutine(CheckAR());
     }
 
     public static void StartGame()
@@ -77,6 +75,16 @@ public static class ApplicationController
     const int MSAA_FRAMES = 20;
     const int MSAA_FPS = 60;
 
+    //Initialization coroutines
+
+    private static IEnumerator InitializationCoroutine()
+    {
+        inTransition = true;
+        yield return StartCoroutine(CalibrateSettings());
+        yield return StartCoroutine(CheckAR());
+        inTransition = false;
+    }
+
     private static IEnumerator CalibrateSettings()
     {
         for(int i = 0; i < MSAA_FRAMES; i++) //Warmup rest
@@ -113,23 +121,34 @@ public static class ApplicationController
                 break;
             }
         }
+
+        Debug.Log("Calibrated MSAA to " + QualitySettings.antiAliasing + "x");
     }
 
     private static IEnumerator CheckAR()
-    {
-        while (ARSession.state == ARSessionState.CheckingAvailability)
+    {        
+        if (ARSession.state == ARSessionState.None || ARSession.state == ARSessionState.CheckingAvailability)
         {
-            Debug.Log("Checking AR availability...");
-            yield return null;
+            yield return ARSession.CheckAvailability();
         }
 
-        if (ARSession.state != ARSessionState.Unsupported && ARSession.state != ARSessionState.None)
+        if (ARSession.state == ARSessionState.Unsupported)
         {
-            Debug.Log("AR ready!");
+            Debug.Log("AR unsupported!");
+        }
+        else
+        {
+            Debug.Log("Starting AR session!");
 
             var origin = refs.GetComponentInChildren<ARSessionOrigin>();
-            origin.transform.localScale = refs.AR_scaledownFactor * Vector3.one;
+            origin.gameObject.SetActive(true);
+            //origin.transform.localScale = refs.AR_scaledownFactor * Vector3.one;
             refs.gameController.gameplayCamera.transform.SetParent(origin.transform);
         }
+    }
+
+    private static Coroutine StartCoroutine(IEnumerator coroutine)
+    {
+        return refs.StartCoroutine(coroutine);
     }
 }

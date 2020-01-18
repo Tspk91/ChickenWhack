@@ -12,7 +12,8 @@ public class FpsCounter : MonoBehaviour
     void Start()
     {
         text = GetComponentInChildren<Text>();
-        
+        text.enabled = false;
+
         for (int i = 0; i < numStrings.Length; i++)
         {
             numStrings[i] = i.ToString();
@@ -24,11 +25,12 @@ public class FpsCounter : MonoBehaviour
     void Update()
     {
         if(Time.deltaTime > 0f)
-        {
             smoothFps = Mathf.Lerp(smoothFps, 1f / Time.deltaTime, Time.deltaTime * 2f);
-        }
 
         text.text = numStrings[Mathf.CeilToInt(smoothFps)];
+
+        if (Input.GetKeyDown(KeyCode.F1))
+            SwitchVisible();
     }
 
     public void SwitchVisible()
