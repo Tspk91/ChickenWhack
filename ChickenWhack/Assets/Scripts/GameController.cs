@@ -16,25 +16,40 @@ public class GameController : MonoBehaviour
 
     public GameObject gameplayUI;
     public GameObject gameplayObjects;
+    public Camera gameplayCamera;
 
     private uint loseCoroutine;
 
+    private bool gameEnded = false;
+
+    public float TimeLeft { get { return timeLimit - (Time.time - startTimeStamp); } }
+    private float startTimeStamp;
+
     public int Score { get; private set; }
 
-    public event System.Action onScored = delegate { };
+    public event System.Action<int> onScored = delegate { };
+
+    private void Awake()
+    {
+        SetObjectsActive(false);
+    }
 
     public void StartGameplay()
     {
+        startTimeStamp = Time.time;
+
+        gameEnded = false;
         enabled = true;
 
-        gameplayUI.SetActive(true);
-        gameplayObjects.SetActive(true);
-        playerController.gameObject.SetActive(true);
+        SetObjectsActive(true);
 
         chickenManager.SpawnChickens(chickenAmount);
         chickenManager.onChickenWhacked += OnChickenWhacked;
 
         loseCoroutine = this.DelayedAction(Lose, timeLimit);
+
+        var ar = FindObjectOfType<UnityEngine.XR.ARFoundation.ARSessionOrigin>();
+        ar.MakeContentAppearAt(gameplayObjects.transform, Vector3.zero, Quaternion.identity);
     }
 
     public void StopGameplay()
@@ -43,9 +58,7 @@ public class GameController : MonoBehaviour
 
         Score = 0;
 
-        gameplayUI.SetActive(false);
-        gameplayObjects.SetActive(false);
-        playerController.gameObject.SetActive(false);
+        SetObjectsActive(false);
 
         chickenManager.Clear();
         chickenManager.onChickenWhacked -= OnChickenWhacked;
@@ -61,25 +74,47 @@ public class GameController : MonoBehaviour
         }
     }
 
+    private void SetObjectsActive(bool state)
+    {
+        gameplayUI.SetActive(state);
+        gameplayObjects.SetActive(state);
+        gameplayCamera.gameObject.SetActive(state);
+    }
+
     public void Win()
     {
+        if (gameEnded)
+            return;
+
+        gameEnded = true;
         ApplicationController.ExitGame(ExitType.WIN);
     }
 
     public void Lose()
     {
+        if (gameEnded)
+            return;
+
+        gameEnded = true;
         ApplicationController.ExitGame(ExitType.LOSE);
     }
 
     public void OnPressExit()
     {
+        if (gameEnded)
+            return;
+
+        gameEnded = true;
         ApplicationController.ExitGame(ExitType.MENU);
     }
 
     private void OnChickenWhacked()
     {
+        if (gameEnded)
+            return;
+
         Score += 1;
-        onScored();
+        onScored(Score);
 
         if (Score == scoreObjective)
         {

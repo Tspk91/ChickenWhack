@@ -9,10 +9,9 @@ public class FpsCounter : MonoBehaviour
 
     string[] numStrings = new string[256];
 
-    // Start is called before the first frame update
     void Start()
     {
-        text = GetComponent<Text>();
+        text = GetComponentInChildren<Text>();
         
         for (int i = 0; i < numStrings.Length; i++)
         {
@@ -22,7 +21,6 @@ public class FpsCounter : MonoBehaviour
 
     float smoothFps = 0f;
 
-    // Update is called once per frame
     void Update()
     {
         if(Time.deltaTime > 0f)
@@ -31,5 +29,10 @@ public class FpsCounter : MonoBehaviour
         }
 
         text.text = numStrings[Mathf.CeilToInt(smoothFps)];
+    }
+
+    public void SwitchVisible()
+    {
+        text.enabled = !text.enabled;
     }
 }

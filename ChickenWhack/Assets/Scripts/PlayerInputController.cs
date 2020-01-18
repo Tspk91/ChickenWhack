@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class PlayerTargeting : MonoBehaviour
+public class PlayerInputController : MonoBehaviour
 {
     public PlayerController player;
 
@@ -14,13 +15,23 @@ public class PlayerTargeting : MonoBehaviour
 
     private void Awake()
     {
-        cam = GetComponent<Camera>();
+        cam = ApplicationController.refs.gameController.gameplayCamera;
 
         destinationEffectPool = new GenericPool<ParticleSystem>(destinationEffectPrefab, 5);
     }
 
+    private void OnEnable()
+    {
+        Vector3 camDir = (cam.transform.position - player.transform.position);
+        camDir.y = 0f;
+        player.transform.rotation = Quaternion.LookRotation(camDir);
+    }
+
     private void Update()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+
         if (Input.touchSupported)
         {
             if(Input.touchCount > 0)
