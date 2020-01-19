@@ -1,8 +1,16 @@
-﻿using System.Collections;
+﻿// Copyright (c) 2020 Alejandro Martín Carrillo, All rights reserved.
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+/// Controls the player character, its lifecycle is controlled by its game object activation.
+/// -Exposes some useful static variables
+/// -Sets nav agent destination
+/// -Controls animations
+/// -Performs attacks against the chickens
+/// </summary>
 public class PlayerController : MonoBehaviour
 {
     public static Vector3 PlayerPosition { get; private set; }

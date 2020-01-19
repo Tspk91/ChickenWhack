@@ -1,0 +1,4 @@
+﻿extensions: .cs .cpp .h
+// Copyright (c) 2020 Alejandro Martín Carrillo, All rights reserved.
+extensions: .aspx .ascx
+// Copyright (c) 2020 Alejandro Martín Carrillo, All rights reserved.

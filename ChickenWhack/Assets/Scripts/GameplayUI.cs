@@ -1,11 +1,16 @@
-﻿using System.Collections;
+﻿// Copyright (c) 2020 Alejandro Martín Carrillo, All rights reserved.
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameplayUI : BaseUI
 {
+    /// <summary>
+    /// Time remaining when timer starts flashing
+    /// </summary>
     public int dangerTime = 10;
+
     public Text timeText;
     public Text scoreText;
     public Text objectiveText;
@@ -14,7 +19,7 @@ public class GameplayUI : BaseUI
     GameController gameController;
 
     Coroutine updateTimeCoroutine;
-    WaitForSeconds secondWait;
+    WaitForSeconds secondWait; //avoid gc
 
     Color timeTextColor;
 

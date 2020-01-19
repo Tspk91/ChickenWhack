@@ -1,13 +1,17 @@
-﻿using System.Collections;
+﻿// Copyright (c) 2020 Alejandro Martín Carrillo, All rights reserved.
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Simple fps counter, touch screen location or press F1 to toggle
+/// </summary>
 public class FpsCounter : MonoBehaviour
 {
     Text text;
 
-    string[] numStrings = new string[256];
+    string[] numStrings = new string[256]; //cached strings to avoid gc
 
     void Start()
     {
@@ -24,8 +28,8 @@ public class FpsCounter : MonoBehaviour
 
     void Update()
     {
-        if(Time.deltaTime > 0f)
-            smoothFps = Mathf.Lerp(smoothFps, 1f / Time.deltaTime, Time.deltaTime * 2f);
+        if(Time.unscaledDeltaTime > 0f)
+            smoothFps = Mathf.Lerp(smoothFps, 1f / Time.unscaledDeltaTime, Time.unscaledDeltaTime * 4f);
 
         text.text = numStrings[Mathf.CeilToInt(smoothFps)];
 

@@ -1,8 +1,12 @@
-﻿using System.Collections;
+﻿// Copyright (c) 2020 Alejandro Martín Carrillo, All rights reserved.
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// Processes inputs to set the player character target position
+/// </summary>
 public class PlayerInputController : MonoBehaviour
 {
     public PlayerController player;
@@ -25,11 +29,13 @@ public class PlayerInputController : MonoBehaviour
 
     private void OnEnable()
     {
+        //Turn character towards the camera
         Vector3 camDir = (cam.transform.position - player.transform.position);
         camDir.y = 0f;
         player.transform.rotation = Quaternion.LookRotation(camDir);
     }
 
+    //Check for input while player is active, unless game is over
     private void Update()
     {
         if (gameController.GameEnded || EventSystem.current.IsPointerOverGameObject() || EventSystem.current.currentSelectedGameObject != null)
@@ -55,6 +61,9 @@ public class PlayerInputController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sends target position to playercontroller, if valid, spawn effect
+    /// </summary>
     private void SetTarget(Vector2 input, bool spawnEffect)
     {
         Vector3 camPos = cam.transform.position;

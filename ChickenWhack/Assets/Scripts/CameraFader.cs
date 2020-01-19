@@ -1,9 +1,14 @@
-﻿using System.Collections;
+﻿// Copyright (c) 2020 Alejandro Martín Carrillo, All rights reserved.
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DigitalSalmon.Fade;
 
-static class CameraFader {
+/// <summary>
+/// Small fade util using DigitalSalmon.Fade plugin to do camera transitions
+/// </summary>
+static class CameraFader
+{
     static FadePostProcess[] effects;
 
     public static void Init(float duration, params Camera[] cameras)
@@ -16,21 +21,27 @@ static class CameraFader {
         }
     }
 
-    public static void FadeUp()
+    /// <summary>
+    /// Hides the fade
+    /// </summary>
+    public static void FadeUp(bool instant = false)
     {
         for (int i = 0; i < effects.Length; i++)
         {
             if (effects[i].isActiveAndEnabled)
-                effects[i].FadeUp();
+                effects[i].FadeUp(instant);
         }
     }
 
-    public static void FadeDown()
+    /// <summary>
+    /// Displays the fade
+    /// </summary>
+    public static void FadeDown(bool instant = false)
     {
         for (int i = 0; i < effects.Length; i++)
         {
             if (effects[i].isActiveAndEnabled)
-                effects[i].FadeDown();
+                effects[i].FadeDown(instant);
         }
     }
 }

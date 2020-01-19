@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿// Copyright (c) 2020 Alejandro Martín Carrillo, All rights reserved.
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,7 +25,7 @@ public class TweenElement : MonoBehaviour
     IEnumerator TweenCoroutine(bool reverse)
     {
         if (!reverse)
-            yield return new WaitForSeconds(delay);
+            yield return new WaitForSecondsRealtime(delay);
 
         float t = 0f;
         while (t < 1f)
