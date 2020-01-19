@@ -82,25 +82,28 @@ public static class ApplicationController
         }, refs.transitionsDuration);
     }
 
-    public static void ExitGame(ExitType exitType)
+    public static void ExitGame(ExitType exitType, float delay)
     {
         if (inTransition)
             return;
 
         inTransition = true;
 
-        CameraFader.FadeDown();
-
         refs.DelayedAction(() =>
         {
-            inTransition = false;
-            refs.menuController.Open();
-            if (exitType != ExitType.AR_PLACEMENT)
-                refs.gameController.StopGameplay();
+            CameraFader.FadeDown();
 
-            CameraFader.FadeUp();
+            refs.DelayedAction(() =>
+            {
+                inTransition = false;
+                refs.menuController.Open();
+                if (exitType != ExitType.AR_PLACEMENT)
+                    refs.gameController.StopGameplay();
 
-        }, refs.transitionsDuration);
+                CameraFader.FadeUp();
+
+            }, refs.transitionsDuration);
+        }, delay);
     }
 
     public static void QuitApplication()

@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 public class PlayerInputController : MonoBehaviour
 {
     public PlayerController player;
+    private GameController gameController;
 
     public ParticleSystem destinationEffectPrefab;
 
@@ -15,7 +16,9 @@ public class PlayerInputController : MonoBehaviour
 
     private void Awake()
     {
-        cam = ApplicationController.refs.gameController.gameplayCamera;
+        gameController = ApplicationController.refs.gameController;
+
+        cam = gameController.gameplayCamera;
 
         destinationEffectPool = new GenericPool<ParticleSystem>(destinationEffectPrefab, 5);
     }
@@ -29,7 +32,7 @@ public class PlayerInputController : MonoBehaviour
 
     private void Update()
     {
-        if (EventSystem.current.IsPointerOverGameObject())
+        if (gameController.GameEnded || EventSystem.current.IsPointerOverGameObject() || EventSystem.current.currentSelectedGameObject != null)
             return;
 
         if (Input.touchSupported)
@@ -60,7 +63,7 @@ public class PlayerInputController : MonoBehaviour
         float dot = Vector3.Dot(dir, Vector3.up);
         Vector3 planePos = camPos - dir * camPos.y / dot;
 
-        planePos = Vector3.ClampMagnitude(planePos, ApplicationController.refs.gameController.gameAreaRadius);
+        planePos = Vector3.ClampMagnitude(planePos, gameController.gameAreaRadius);
 
         if (player.SetTargetPosition(planePos, out Vector3 navPos))
         {

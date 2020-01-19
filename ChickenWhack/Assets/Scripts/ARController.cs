@@ -74,7 +74,7 @@ public class ARController : MonoBehaviour
     {
         EndPlacement();
 
-        ApplicationController.ExitGame(ExitType.AR_PLACEMENT);
+        ApplicationController.ExitGame(ExitType.AR_PLACEMENT, 0f);
     }
 
     private void EndPlacement()

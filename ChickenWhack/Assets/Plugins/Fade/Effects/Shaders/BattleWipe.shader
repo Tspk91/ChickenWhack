@@ -12,6 +12,7 @@
 	}
 	SubShader {
 		Cull Off ZWrite Off ZTest Always
+		Blend SrcAlpha OneMinusSrcAlpha
 		Pass
 		{
 			CGPROGRAM
@@ -44,9 +45,9 @@
 				float mask = smoothstep(delta - _Softness, delta + _Softness, i.uv.x);
 
 
-				fixed4 col = tex2D(_MainTex, i.uv);
+				fixed4 col = fixed4(_BaseColor.rgb, 1 - mask); //fixed4 col = tex2D(_MainTex, i.uv);
 
-				return lerp(_BaseColor, col, mask);
+				return col; //lerp(_BaseColor, col, mask);
 			}
 			ENDCG
 		}

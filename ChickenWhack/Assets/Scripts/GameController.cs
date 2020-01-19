@@ -20,13 +20,14 @@ public class GameController : MonoBehaviour
 
     private uint loseCoroutine;
 
-    private bool gameEnded = false;
+    public bool GameEnded { get; private set; }
 
     public float TimeLeft { get { return timeLimit - (Time.time - startTimeStamp); } }
     private float startTimeStamp;
 
     public int Score { get; private set; }
 
+    public event System.Action<bool> onGameEnded = delegate { };
     public event System.Action<int> onScored = delegate { };
 
     private void Awake()
@@ -38,7 +39,7 @@ public class GameController : MonoBehaviour
     {
         startTimeStamp = Time.time;
 
-        gameEnded = false;
+        GameEnded = false;
         enabled = true;
 
         SetObjectsActive(true);
@@ -80,36 +81,38 @@ public class GameController : MonoBehaviour
 
     public void Win()
     {
-        if (gameEnded)
+        if (GameEnded)
             return;
 
-        gameEnded = true;
-        ApplicationController.ExitGame(ExitType.WIN);
+        GameEnded = true;
+        onGameEnded(true);
+        ApplicationController.ExitGame(ExitType.WIN, 1f);
     }
 
     public void Lose()
     {
-        if (gameEnded)
+        if (GameEnded)
             return;
 
-        gameEnded = true;
-        ApplicationController.ExitGame(ExitType.LOSE);
+        GameEnded = true;
+        onGameEnded(false);
+        ApplicationController.ExitGame(ExitType.LOSE, 2f);
     }
 
     public void OnPressExit()
     {
-        if (gameEnded)
+        if (GameEnded)
             return;
 
-        gameEnded = true;
-        ApplicationController.ExitGame(ExitType.MENU);
+        GameEnded = true;
+        ApplicationController.ExitGame(ExitType.MENU, 0f);
 
         gameplayUI.Hide();
     }
 
     private void OnChickenWhacked()
     {
-        if (gameEnded)
+        if (GameEnded)
             return;
 
         Score += 1;

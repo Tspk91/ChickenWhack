@@ -96,16 +96,34 @@ namespace DigitalSalmon.Fade {
 			if (defaultFadeEffect != null) AssignEffect(defaultFadeEffect);
 		}
 
-		protected void OnRenderImage(RenderTexture source, RenderTexture destination) {
-			if (currentEffectMaterial == null || (!Application.isPlaying && !preview) || GetEffectAlpha() == 0) {
-				Graphics.Blit(source, destination);
-				return;
-			}
+        //protected void OnRenderImage(RenderTexture source, RenderTexture destination) {
+        //	if (currentEffectMaterial == null || (!Application.isPlaying && !preview) || GetEffectAlpha() == 0) {
+        //		Graphics.Blit(source, destination);
+        //		return;
+        //	}
 
-			Graphics.Blit(source, destination, currentEffectMaterial);
-		}
+        //	Graphics.Blit(source, destination, currentEffectMaterial);
+        //}
 
-		protected void Update() {
+        protected void OnPostRender()
+        {
+            if (currentEffectMaterial == null || (!Application.isPlaying && !preview) || GetEffectAlpha() == 0)
+                return;
+
+            GL.PushMatrix();
+            currentEffectMaterial.SetPass(0);
+            GL.LoadOrtho();
+            GL.Begin(GL.QUADS);
+            GL.Color(Color.white);
+            GL.Vertex3(0, 0, 0);
+            GL.Vertex3(0, 1, 0);
+            GL.Vertex3(1, 1, 0);
+            GL.Vertex3(1, 0, 0);
+            GL.End();
+            GL.PopMatrix();
+        }
+
+        protected void Update() {
 			if (!Application.isPlaying) {
 				if (CurrentEffect != defaultFadeEffect) AssignEffect(defaultFadeEffect);
 				if (preview) {

@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
 
     SphereCollider trigger;
 
-    bool attacking = false;
+    bool canAttack = false;
 
     float smoothVelocity;
 
@@ -32,13 +32,15 @@ public class PlayerController : MonoBehaviour
         trigger = GetComponent<SphereCollider>();
 
         path = new NavMeshPath();
+
+        ApplicationController.refs.gameController.onGameEnded += OnGameEnded;
     }
 
     private void OnEnable()
     {
         UpdateStaticVars();
 
-        attacking = false;
+        canAttack = true;
         smoothVelocity = 0f;
 
         navigation.Warp(Vector3.zero);
@@ -82,11 +84,19 @@ public class PlayerController : MonoBehaviour
         return valid;
     }
 
+    private void OnGameEnded(bool win)
+    {
+        canAttack = false;
+        navigation.ResetPath();
+        if (!win)
+            animator.SetTrigger(dieAnimID);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (!attacking)
+        if (canAttack)
         {
-            attacking = true;
+            canAttack = false;
 
             animator.SetTrigger(Random.value > 0.5f ? attack0AnimID : attack1AnimID);
 
@@ -98,7 +108,7 @@ public class PlayerController : MonoBehaviour
 
     private void CheckAttack()
     {
-        attacking = false;
+        canAttack = true;
 
         int hits = Physics.OverlapSphereNonAlloc(transform.position + transform.rotation * trigger.center, trigger.radius, hitArray, 1 << 0);
 

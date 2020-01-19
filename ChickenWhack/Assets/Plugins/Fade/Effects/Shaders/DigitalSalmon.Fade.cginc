@@ -38,7 +38,7 @@ struct ds_v2f {
 ds_v2f ds_vert_img(ds_appdata v) {
 	ds_v2f o;
 	o.vertex = UnityObjectToClipPos(v.vertex);
-	o.uv = v.uv;
+    o.uv = o.vertex; //v.uv;
 	return o;
 }
 
