@@ -10,6 +10,8 @@ public class ApplicationRefs : MonoBehaviour
     public int targetFps = 60;
     public float AR_scaledownFactor = 200f;
 
+    public ARSession AR_session; 
+
     public MenuController menuController;
     public GameController gameController;
     public GameObject gameOver;
@@ -40,6 +42,12 @@ public static class ApplicationController
 
     public static void StartGame()
     {
+        if (refs.AR_session.isActiveAndEnabled)
+        {
+            refs.AR_session.Reset();
+            refs.AR_session.GetComponentInChildren<ARSessionOrigin>().MakeContentAppearAt(refs.gameController.gameplayObjects.transform, Vector3.zero, Quaternion.identity);
+        }
+
         if (inTransition)
             return;
 
@@ -73,7 +81,6 @@ public static class ApplicationController
 
     const int MSAA_ITERATIONS = 2;
     const int MSAA_FRAMES = 20;
-    const int MSAA_FPS = 60;
 
     //Initialization coroutines
 
@@ -81,7 +88,7 @@ public static class ApplicationController
     {
         inTransition = true;
         yield return StartCoroutine(CalibrateSettings());
-        yield return StartCoroutine(CheckAR());
+        yield return StartCoroutine(TryInitAR());
         inTransition = false;
     }
 
@@ -98,7 +105,7 @@ public static class ApplicationController
 
         while(iterations < MSAA_ITERATIONS)
         {
-            avgFramerate = 60;
+            avgFramerate = refs.targetFps;
 
             int frameCount = 0;
 
@@ -111,7 +118,7 @@ public static class ApplicationController
                 frameCount++;
             }
 
-            if (avgFramerate < MSAA_FPS - 1f)
+            if (avgFramerate < refs.targetFps - 1f)
             {
                 QualitySettings.antiAliasing /= 2;
                 iterations++;
@@ -125,25 +132,30 @@ public static class ApplicationController
         Debug.Log("Calibrated MSAA to " + QualitySettings.antiAliasing + "x");
     }
 
-    private static IEnumerator CheckAR()
+    private static IEnumerator TryInitAR()
     {        
         if (ARSession.state == ARSessionState.None || ARSession.state == ARSessionState.CheckingAvailability)
         {
+            refs.AR_session.gameObject.SetActive(true);
             yield return ARSession.CheckAvailability();
         }
 
         if (ARSession.state == ARSessionState.Unsupported)
         {
             Debug.Log("AR unsupported!");
+
+            refs.AR_session.gameObject.SetActive(false);
         }
         else
         {
             Debug.Log("Starting AR session!");
 
-            var origin = refs.GetComponentInChildren<ARSessionOrigin>();
-            origin.gameObject.SetActive(true);
-            //origin.transform.localScale = refs.AR_scaledownFactor * Vector3.one;
-            refs.gameController.gameplayCamera.transform.SetParent(origin.transform);
+            var AR_origin = refs.AR_session.GetComponentInChildren<ARSessionOrigin>();
+            AR_origin.transform.localScale = refs.AR_scaledownFactor * Vector3.one;
+            yield return null;
+            var AR_camera = refs.gameController.gameplayCamera;
+            AR_origin.camera = AR_camera;
+            AR_camera.transform.SetParent(AR_origin.transform);
         }
     }
 

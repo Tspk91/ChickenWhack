@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour
 
     public bool SetTargetPosition(Vector3 target, out Vector3 navPos)
     {
-        bool valid = NavMesh.SamplePosition(target, out NavMeshHit result, 4f, NavMesh.AllAreas);
+        bool valid = NavMesh.SamplePosition(target, out NavMeshHit result, 10f, NavMesh.AllAreas);
 
         if (valid)
         {

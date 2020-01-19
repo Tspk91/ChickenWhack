@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEditor;
 using System.Reflection;
 
+//C:\platform-tools\adb.exe install F:\Users\IZQUIERDO\Documents\ChickenWhackRepo\ChickenWhack\Builds\ChickenWhack.arm64-v8a.apk
+
 static class BuildUtil
 {
     enum BuildType { Development, DevelopmentOptimized, Release }

@@ -87,8 +87,9 @@ public class ChickenAgent : MonoBehaviour
 
         if (NavMesh.SamplePosition(spawnPos, out NavMeshHit result, 1f, NavMesh.AllAreas))
         {
-            transform.position = spawnPos;
+            navigation.Warp(result.position);
             transform.rotation = Quaternion.AngleAxis(360f * Random.value, Vector3.up);
+
             gameObject.SetActive(true);
 
             return true;
@@ -282,7 +283,7 @@ public class ChickenAgent : MonoBehaviour
         {
             pos = destinationFunction();
         }
-        while (pos.sqrMagnitude > gameRadiusSqr || !NavMesh.SamplePosition(pos, out result, 6f, NavMesh.AllAreas));
+        while (pos.sqrMagnitude > gameRadiusSqr || !NavMesh.SamplePosition(pos, out result, 4f, NavMesh.AllAreas));
 
         navigation.SetDestination(result.position);
     }
