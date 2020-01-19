@@ -56,6 +56,7 @@ static class BuildUtil
                 buildOptions |= BuildOptions.Development;
                 buildOptions |= BuildOptions.CompressWithLz4;
                 PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.Android, Il2CppCompilerConfiguration.Debug);
+                PlayerSettings.SetManagedStrippingLevel(BuildTargetGroup.Android, ManagedStrippingLevel.Low);
                 PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
                 break;
             case BuildType.DevelopmentOptimized:
@@ -63,12 +64,14 @@ static class BuildUtil
                 buildOptions |= BuildOptions.ConnectWithProfiler;
                 buildOptions |= BuildOptions.CompressWithLz4;
                 PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.Android, Il2CppCompilerConfiguration.Master);
+                PlayerSettings.SetManagedStrippingLevel(BuildTargetGroup.Android, ManagedStrippingLevel.Low);
                 PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
                 break;
             case BuildType.Release:
                 buildOptions &= ~BuildOptions.Development;
                 buildOptions |= BuildOptions.CompressWithLz4HC;
                 PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.Android, Il2CppCompilerConfiguration.Master);
+                PlayerSettings.SetManagedStrippingLevel(BuildTargetGroup.Android, ManagedStrippingLevel.High);
                 PlayerSettings.Android.targetArchitectures = AndroidArchitecture.All;
                 break;
         }

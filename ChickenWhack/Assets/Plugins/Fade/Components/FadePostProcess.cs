@@ -39,7 +39,7 @@ namespace DigitalSalmon.Fade {
 		protected FadeEffect defaultFadeEffect;
 
 		[SerializeField]
-		protected float effectDuration = 1;
+		public float effectDuration = 1;
 
 		[SerializeField]
 		protected AnimationCurve effectEasing;

@@ -14,7 +14,7 @@ public class GameController : MonoBehaviour
 
     public PlayerController playerController;
 
-    public GameObject gameplayUI;
+    public GameplayUI gameplayUI;
     public GameObject gameplayObjects;
     public Camera gameplayCamera;
 
@@ -73,7 +73,7 @@ public class GameController : MonoBehaviour
 
     private void SetObjectsActive(bool state)
     {
-        gameplayUI.SetActive(state);
+        gameplayUI.gameObject.SetActive(state);
         gameplayObjects.SetActive(state);
         gameplayCamera.gameObject.SetActive(state);
     }
@@ -103,6 +103,8 @@ public class GameController : MonoBehaviour
 
         gameEnded = true;
         ApplicationController.ExitGame(ExitType.MENU);
+
+        gameplayUI.Hide();
     }
 
     private void OnChickenWhacked()

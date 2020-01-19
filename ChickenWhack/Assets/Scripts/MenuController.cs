@@ -4,21 +4,32 @@ using UnityEngine;
 
 public class MenuController : MonoBehaviour
 {
-    public GameObject menuUI;
+    public MenuUI menuUI;
     public GameObject menuObjects;
+    public Camera menuCamera;
+
+    private void Awake()
+    {
+        menuUI.gameObject.SetActive(false);
+
+        menuObjects.SetActive(true);
+        menuCamera.gameObject.SetActive(true);
+    }
 
     public void Open()
     {
         enabled = true;
-        menuUI.SetActive(true);
+        menuUI.gameObject.SetActive(true);
         menuObjects.SetActive(true);
+        menuCamera.gameObject.SetActive(true);
     }
 
     public void Close()
     {
         enabled = false;
-        menuUI.SetActive(false);
+        menuUI.gameObject.SetActive(false);
         menuObjects.SetActive(false);
+        menuCamera.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -32,5 +43,7 @@ public class MenuController : MonoBehaviour
     public void OnPressStart()
     {
         ApplicationController.StartGame();
+
+        menuUI.Hide();
     }
 }

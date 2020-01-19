@@ -3,18 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
-public enum ExitType { MENU, WIN, LOSE }
+public enum ExitType { MENU, WIN, LOSE, AR_PLACEMENT }
 
 public class ApplicationRefs : MonoBehaviour
 {
     public int targetFps = 60;
     public float AR_scaledownFactor = 200f;
 
-    public ARSession AR_session; 
+    public ARController AR_controller;
+
+    public GameObject loadingScreen;
 
     public MenuController menuController;
     public GameController gameController;
+
     public GameObject gameOver;
+
+    public float transitionsDuration = 0.5f;
 
     private void Awake()
     {
@@ -35,29 +40,46 @@ public static class ApplicationController
 
         ApplicationController.refs = refs;
 
-        StartCoroutine(InitializationCoroutine());
+        CameraFader.Init(refs.transitionsDuration, refs.menuController.menuCamera, refs.gameController.gameplayCamera);
 
+        StartCoroutine(LoadCoroutine());
+    }
+
+    private static IEnumerator LoadCoroutine()
+    {
+        refs.loadingScreen.SetActive(true);
+
+        inTransition = true;
+        yield return StartCoroutine(CalibrateSettings());
+        yield return StartCoroutine(refs.AR_controller.TryInitAR(refs.gameController.gameplayCamera, refs.AR_scaledownFactor));
+        inTransition = false;
+
+        refs.loadingScreen.SetActive(false);
         refs.menuController.Open();
     }
 
     public static void StartGame()
     {
-        if (refs.AR_session.isActiveAndEnabled)
-        {
-            refs.AR_session.Reset();
-            refs.AR_session.GetComponentInChildren<ARSessionOrigin>().MakeContentAppearAt(refs.gameController.gameplayObjects.transform, Vector3.zero, Quaternion.identity);
-        }
-
         if (inTransition)
             return;
 
         inTransition = true;
+
+        CameraFader.FadeDown();
+
         refs.DelayedAction(() =>
         {
             inTransition = false;
             refs.menuController.Close();
-            refs.gameController.StartGameplay();
-        }, 0.25f);
+
+            if (refs.AR_controller.AR_Enabled)
+                refs.AR_controller.StartPlacement(refs.gameController.gameplayObjects.transform, refs.gameController.StartGameplay);
+            else
+                refs.gameController.StartGameplay();
+
+            CameraFader.FadeUp();
+
+        }, refs.transitionsDuration);
     }
 
     public static void ExitGame(ExitType exitType)
@@ -66,12 +88,19 @@ public static class ApplicationController
             return;
 
         inTransition = true;
+
+        CameraFader.FadeDown();
+
         refs.DelayedAction(() =>
         {
             inTransition = false;
             refs.menuController.Open();
-            refs.gameController.StopGameplay();
-        }, 0.25f);
+            if (exitType != ExitType.AR_PLACEMENT)
+                refs.gameController.StopGameplay();
+
+            CameraFader.FadeUp();
+
+        }, refs.transitionsDuration);
     }
 
     public static void QuitApplication()
@@ -79,18 +108,10 @@ public static class ApplicationController
         Application.Quit();
     }
 
+    //Antialiasing calibration
+
     const int MSAA_ITERATIONS = 2;
     const int MSAA_FRAMES = 20;
-
-    //Initialization coroutines
-
-    private static IEnumerator InitializationCoroutine()
-    {
-        inTransition = true;
-        yield return StartCoroutine(CalibrateSettings());
-        yield return StartCoroutine(TryInitAR());
-        inTransition = false;
-    }
 
     private static IEnumerator CalibrateSettings()
     {
@@ -130,33 +151,6 @@ public static class ApplicationController
         }
 
         Debug.Log("Calibrated MSAA to " + QualitySettings.antiAliasing + "x");
-    }
-
-    private static IEnumerator TryInitAR()
-    {        
-        if (ARSession.state == ARSessionState.None || ARSession.state == ARSessionState.CheckingAvailability)
-        {
-            refs.AR_session.gameObject.SetActive(true);
-            yield return ARSession.CheckAvailability();
-        }
-
-        if (ARSession.state == ARSessionState.Unsupported)
-        {
-            Debug.Log("AR unsupported!");
-
-            refs.AR_session.gameObject.SetActive(false);
-        }
-        else
-        {
-            Debug.Log("Starting AR session!");
-
-            var AR_origin = refs.AR_session.GetComponentInChildren<ARSessionOrigin>();
-            AR_origin.transform.localScale = refs.AR_scaledownFactor * Vector3.one;
-            yield return null;
-            var AR_camera = refs.gameController.gameplayCamera;
-            AR_origin.camera = AR_camera;
-            AR_camera.transform.SetParent(AR_origin.transform);
-        }
     }
 
     private static Coroutine StartCoroutine(IEnumerator coroutine)

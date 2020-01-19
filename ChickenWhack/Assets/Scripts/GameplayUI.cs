@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameplayUI : MonoBehaviour
+public class GameplayUI : BaseUI
 {
     public Text timeText;
     public Text scoreText;
+    public Text objectiveText;
 
     GameController gameController;
 
@@ -24,12 +25,16 @@ public class GameplayUI : MonoBehaviour
 
     private void OnEnable()
     {
+        objectiveText.text = gameController.scoreObjective.ToString();
+
         UpdateScore(0);
         updateTimeCoroutine = StartCoroutine(UpdateTime());
     }
 
-    private void OnDisable()
+    public override void Hide()
     {
+        base.Hide();
+
         StopCoroutine(updateTimeCoroutine);
     }
 
@@ -37,7 +42,8 @@ public class GameplayUI : MonoBehaviour
     {
         while(true)
         {
-            timeText.text = Mathf.CeilToInt(gameController.TimeLeft).ToString();
+            int seconds = Mathf.CeilToInt(gameController.TimeLeft);
+            timeText.text = string.Format("{0}:{1:00}", seconds / 60, seconds % 60);
 
             yield return secondWait;
         }
@@ -45,6 +51,6 @@ public class GameplayUI : MonoBehaviour
 
     private void UpdateScore(int score)
     {
-        scoreText.text = score + "/" + gameController.scoreObjective;
+        scoreText.text = score.ToString();
     }
 }
