@@ -38,26 +38,16 @@ public class PlayerInputController : MonoBehaviour
     //Check for input while player is active, unless game is over
     private void Update()
     {
-        if (gameController.GameEnded || EventSystem.current.IsPointerOverGameObject() || EventSystem.current.currentSelectedGameObject != null)
+        if (gameController.GameEnded)
             return;
 
-        if (Input.touchSupported)
+        if (InputController.GetTapDown(out Vector2 tapPos))
         {
-            if(Input.touchCount > 0)
-            {
-                var touch = Input.GetTouch(0);
-                if (touch.phase == TouchPhase.Began)
-                {
-                    SetTarget(touch.position, true);
-                }
-            }
+            SetTarget(tapPos, true);
         }
-        else
+        else if(!Input.touchSupported && InputController.GetTap(out tapPos))
         {
-            bool mouseDown = Input.GetMouseButtonDown(0);
-
-            if(mouseDown || Input.GetMouseButton(0))
-                SetTarget(Input.mousePosition, mouseDown);
+            SetTarget(tapPos, false);
         }
     }
 

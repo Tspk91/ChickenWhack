@@ -64,6 +64,7 @@ public class ChickenAgent : MonoBehaviour
     WaitForSeconds oneSecondWait = new WaitForSeconds(1f);
     WaitForSeconds halfSecondWait = new WaitForSeconds(0.5f);
 
+    //Cache some variables, initialize randomized values
     void Awake()
     {
         animator = GetComponentInChildren<Animator>();
@@ -82,18 +83,9 @@ public class ChickenAgent : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private void OnEnable()
-    {
-        navigation.speed = baseSpeed;
-
-        StartCoroutine(StateUpdateCoroutine());
-    }
-
-    private void OnDisable()
-    {
-        StopAllCoroutines();
-    }
-
+    /// <summary>
+    /// Spawn (enable) in the given position if it is valid.
+    /// </summary>
     public bool Spawn(ChickenManager manager, Vector3 spawnPos)
     {
         this.manager = manager;
@@ -107,15 +99,23 @@ public class ChickenAgent : MonoBehaviour
 
             gameObject.SetActive(true);
 
+            navigation.speed = baseSpeed;
+
+            StartCoroutine(StateUpdateCoroutine());
+
             return true;
         }
 
         return false;
     }
 
+    /// <summary>
+    /// Despawn (disable) and return to pool
+    /// </summary>
     public void Despawn()
     {
         this.CancelAllActions();
+        StopAllCoroutines();
 
         gameObject.SetActive(false);
 
@@ -145,17 +145,18 @@ public class ChickenAgent : MonoBehaviour
             }
         }
 
+        //Start new state
         switch (newState)
         {
-            case BehaviorState.IDLE:
+            case BehaviorState.IDLE: //Stop moving
                 navigation.speed = 0f;
                 break;
-            case BehaviorState.WANDER:
+            case BehaviorState.WANDER: //Start wandering by setting a random destination
                 navigation.speed = baseSpeed;
                 animator.SetBool(walkAnimID, true);
                 SetDestination(GetWanderDestinationCandidate);
                 break;
-            case BehaviorState.AVOID_PLAYER:
+            case BehaviorState.AVOID_PLAYER: //Start avoiding by setting a flee destination
                 SetDestination(GetFleeDestinationCandidate);
                 UpdateFleeState(false);
                 break;
@@ -164,6 +165,7 @@ public class ChickenAgent : MonoBehaviour
         state = newState;
     }
 
+    //Main update coroutine, lazy updating with waits. Can change state if state dependent conditions happen.
     IEnumerator StateUpdateCoroutine()
     {
         yield return new WaitForSeconds(Random.value); //Randomize behavior start time, this will spread perf cost
@@ -218,6 +220,7 @@ public class ChickenAgent : MonoBehaviour
         }
     }
 
+    //Runs in the background selecting either wander or idle at random intervals (except if avoiding the player)
     IEnumerator RandomStateCoroutine()
     {
         while (true)
@@ -320,6 +323,7 @@ public class ChickenAgent : MonoBehaviour
         return fleePosition;
     }
 
+    //Flee condition (walk)
     bool CheckFlee()
     {
         bool playerIncoming = PlayerVelocity.sqrMagnitude > 1f &&
@@ -328,6 +332,7 @@ public class ChickenAgent : MonoBehaviour
         return (transform.position - PlayerPosition).sqrMagnitude < (playerIncoming ? sqrFleeRadiusInternal : sqrFleeRelaxedRadiusInternal);
     }
 
+    //Flee condition (run)
     bool CheckFastFlee()
     {
         return (transform.position - PlayerPosition).sqrMagnitude < sqrFleeFastRadiusInternal &&
@@ -335,6 +340,7 @@ public class ChickenAgent : MonoBehaviour
                Vector3.Dot(PlayerVelocity, transform.position - PlayerPosition) > 0.5f;
     }
 
+    //Receive player hit
     public void Whack()
     {
         if (!isDying)

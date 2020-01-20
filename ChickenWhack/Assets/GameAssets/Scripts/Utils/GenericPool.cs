@@ -3,10 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Generic pool of unity components.
+/// </summary>
 public class GenericPool<T> where T : Component
 {
     public T prefab;
     
+    //This contains all objects in pools, note this makes pool instance members exclusive to that pool instance
     private static Dictionary<T, PoolRef> registeredObjects = new Dictionary<T, PoolRef>();
 
     private List<T> pooledObjects = new List<T>();
@@ -21,11 +25,17 @@ public class GenericPool<T> where T : Component
         }
     }
 
+    /// <summary>
+    /// Returns all objects to the pool.
+    /// </summary>
     public void ClearObjects()
     {
         ClearObjects(null);
     }
 
+    /// <summary>
+    /// Returns all objects to the pool executing a delegate first for each returnee.
+    /// </summary>
     public void ClearObjects(System.Action<T> clearFunc)
     {
         foreach(var kvp in registeredObjects)
@@ -39,6 +49,9 @@ public class GenericPool<T> where T : Component
         }
     }
 
+    /// <summary>
+    /// Gets an object from the pool or creates one if empty. If despawnTime is positive, the object will return automatically.
+    /// </summary>
     public T GetObject(float despawnTime = -1f)
     {
         if (pooledObjects.Count > 0)
@@ -81,6 +94,9 @@ public class GenericPool<T> where T : Component
         return newObj;
     }
 
+    /// <summary>
+    /// Auxilliary class to handle each pooled object references
+    /// </summary>
     private class PoolRef
     {
         private GenericPool<T> pool;

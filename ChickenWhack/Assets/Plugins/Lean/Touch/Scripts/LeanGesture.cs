@@ -482,7 +482,7 @@ namespace Lean.Touch
 		/// <summary>Gets the pinch scale of the fingers.</summary>
 		public static float GetPinchScale(float wheelSensitivity = 0.0f)
 		{
-			return GetPinchScale(LeanTouch.Fingers, wheelSensitivity);
+			return GetPinchScale(LeanTouch.Fingers);
 		}
 
 		/// <summary>Gets the pinch scale of the fingers.</summary>

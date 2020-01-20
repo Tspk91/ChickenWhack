@@ -18,6 +18,7 @@ public class ApplicationRefs : MonoBehaviour
 
     public GameObject loadingScreen;
 
+    public InputController inputController;
     public MenuController menuController;
     public GameController gameController;
 

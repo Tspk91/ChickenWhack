@@ -86,7 +86,7 @@ public class GameController : MonoBehaviour
     //Checks for input to return to menu
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (InputController.GetEscapeDown())
         {
             OnPressExit();
         }
@@ -107,6 +107,8 @@ public class GameController : MonoBehaviour
         GameEnded = true;
         onGameEnded(true);
         ApplicationController.ExitGame(GameExitType.WIN, 1f);
+
+        this.DelayedAction(gameplayUI.Hide, 0.5f);
     }
 
     public void Lose()
@@ -117,6 +119,8 @@ public class GameController : MonoBehaviour
         GameEnded = true;
         onGameEnded(false);
         ApplicationController.ExitGame(GameExitType.LOSE, 2f);
+
+        this.DelayedAction(gameplayUI.Hide, 1.5f);
     }
 
     public void OnPressExit()

@@ -1,10 +1,9 @@
-﻿using System.Collections;
+﻿// Copyright (c) 2020 Alejandro Martín Carrillo, All rights reserved.
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.Reflection;
-
-//C:\platform-tools\adb.exe install F:\Users\IZQUIERDO\Documents\ChickenWhackRepo\ChickenWhack\Builds\ChickenWhack.arm64-v8a.apk
 
 static class BuildUtil
 {

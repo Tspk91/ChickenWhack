@@ -16,16 +16,22 @@ public class ARController : MonoBehaviour
 {
     enum AR_State { NONE, ACTIVE, FIND_PLANE, PLACING }
 
+    const string labelResetting = "Starting tracking...";
     const string labelFindPlane = "Point at a flat surface";
     const string labelPlaceObject = "Tap to place the game world";
 
     public bool AR_Enabled { get { return state != AR_State.NONE; } }
 
+    //AR Foundation components
     public ARSession session;
     public ARSessionOrigin origin;
     public ARRaycastManager raycastManager;
 
+    //Cancel placement phase button
     public GameObject cancelButton;
+
+    public float twistContentSpeed = 1f;
+    public float pinchContentSpeed = 1f;
 
     public float placementIndicatorRefSize = 10;
     public Transform placementIndicator;
@@ -34,10 +40,10 @@ public class ARController : MonoBehaviour
     AR_State state = AR_State.NONE;
 
     Camera AR_camera;
-    float scaleFactor = 1f;
+    float initialScaleFactor = 1f;
 
     Transform objectToPlace;
-    System.Action onPlaced;
+    System.Action onPlaced; //is cleared after being called
 
     List<ARRaycastHit> hits = new List<ARRaycastHit>(); //reused array for plane raycasting
 
@@ -48,6 +54,11 @@ public class ARController : MonoBehaviour
         placementIndicator.gameObject.SetActive(false);
 
         placementIndicator.transform.localScale = Vector3.one * (2f * ApplicationController.refs.gameController.gameAreaRadius) / placementIndicatorRefSize;
+    }
+
+    private void SetScaleFactor(float factor)
+    {
+        origin.transform.localScale = factor * Vector3.one;
     }
 
     /// <summary>
@@ -64,7 +75,7 @@ public class ARController : MonoBehaviour
     /// <summary>
     /// Try to initialize AR, if not found fallback to stationary camera, else wait for initialization and configure AR objects
     /// </summary>
-    public IEnumerator TryInitAR(Camera AR_camera, float scaleFactor)
+    public IEnumerator TryInitAR(Camera AR_camera, float initialScaleFactor)
     {
         if (ARSession.state == ARSessionState.None || ARSession.state == ARSessionState.CheckingAvailability)
         {
@@ -82,7 +93,8 @@ public class ARController : MonoBehaviour
         {
             Debug.Log("Starting AR session!");
 
-            origin.transform.localScale = scaleFactor * Vector3.one;
+            SetScaleFactor(initialScaleFactor);
+
             AR_camera.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
 
             yield return null;
@@ -91,13 +103,13 @@ public class ARController : MonoBehaviour
             poseDriver.SetPoseSource(TrackedPoseDriver.DeviceType.GenericXRDevice, TrackedPoseDriver.TrackedPose.ColorCamera);
             poseDriver.trackingType = TrackedPoseDriver.TrackingType.RotationAndPosition;
             poseDriver.updateType = TrackedPoseDriver.UpdateType.UpdateAndBeforeRender;
-            poseDriver.UseRelativeTransform = false;
+            poseDriver.UseRelativeTransform = true;
 
             origin.camera = AR_camera;
             AR_camera.transform.SetParent(origin.transform);
 
             this.AR_camera = AR_camera;
-            this.scaleFactor = scaleFactor;
+            this.initialScaleFactor = initialScaleFactor;
 
             yield return null;
 
@@ -111,9 +123,12 @@ public class ARController : MonoBehaviour
         AR_camera.gameObject.SetActive(true);
         CameraFader.FadeDown(true); //instant fade
 
+        placementText.gameObject.SetActive(true);
+        placementText.text = labelResetting;
+
         //Discard previous planes etc
         yield return Reset();
-
+        
         state = AR_State.FIND_PLANE;
         placementText.text = labelFindPlane;
 
@@ -121,7 +136,6 @@ public class ARController : MonoBehaviour
         this.onPlaced = onPlaced;
 
         cancelButton.SetActive(true);
-        placementText.gameObject.SetActive(true);
     }
 
     public void CancelPlacement()
@@ -135,7 +149,6 @@ public class ARController : MonoBehaviour
     {
         state = AR_State.ACTIVE;
 
-        objectToPlace = null;
         onPlaced = null;
 
         cancelButton.SetActive(false);
@@ -143,12 +156,26 @@ public class ARController : MonoBehaviour
         placementIndicator.gameObject.SetActive(false);
     }
 
-    public void Place(Vector3 position)
+    public void PlaceContent(Vector3 position)
     {
         origin.MakeContentAppearAt(objectToPlace, position, Quaternion.identity);
         onPlaced();
 
         EndPlacement();
+
+        SetScaleFactor(initialScaleFactor);
+    }
+
+    private void ScaleContent(float scale)
+    {
+        if (scale == 0f)
+            return;
+        SetScaleFactor(origin.transform.localScale.x / scale);
+    }
+
+    private void RotateContent(float degrees)
+    {
+        origin.MakeContentAppearAt(objectToPlace, Quaternion.AngleAxis(degrees, -Vector3.up) * Quaternion.Inverse(origin.transform.rotation) * objectToPlace.rotation);
     }
 
     /// <summary>
@@ -156,13 +183,23 @@ public class ARController : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (state == AR_State.NONE || state == AR_State.ACTIVE || 
-            EventSystem.current.IsPointerOverGameObject() || EventSystem.current.currentSelectedGameObject != null)
+        if (state == AR_State.ACTIVE || state == AR_State.NONE )
         {
-            return;
+            if (objectToPlace != null && InputController.MultiTouch()) //Process content rotation and scaling input if it is placed
+            {
+                RotateContent(InputController.GetTwistDegrees() * twistContentSpeed);
+                ScaleContent(Mathf.Pow(InputController.GetPinchScale(), pinchContentSpeed));
+            }
         }
+        else //We are in placement phase
+        {
+            PlacementUpdate();
+        }
+    }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+    private void PlacementUpdate()
+    {
+        if (InputController.GetEscapeDown())
         {
             CancelPlacement();
             return;
@@ -172,7 +209,7 @@ public class ARController : MonoBehaviour
 
         if (raycastManager.Raycast(screenPoint, hits, TrackableType.Planes))
         {
-            if(state != AR_State.PLACING) //change state to placing
+            if (state != AR_State.PLACING) //change state to placing
             {
                 state = AR_State.PLACING;
                 placementText.text = labelPlaceObject;
@@ -186,19 +223,13 @@ public class ARController : MonoBehaviour
             Vector3 camDirHorizontal = AR_camera.transform.forward;
             camDirHorizontal.y = 0f;
             Quaternion placementRotation = Quaternion.LookRotation(camDirHorizontal, Vector3.up);
-            
+
             //Update the placement indicator
             placementIndicator.SetPositionAndRotation(placementPosition, placementRotation);
 
             //If user taps, place the object
-            if (Input.touchCount > 0)
-            {
-                var touch = Input.GetTouch(0);
-                if (touch.phase == TouchPhase.Began)
-                {
-                    Place(pose.position);
-                }
-            }
+            if (InputController.GetTapDown(out Vector2 tapPos))
+                PlaceContent(pose.position);
         }
         else if (state != AR_State.FIND_PLANE) //change state to finding plane
         {

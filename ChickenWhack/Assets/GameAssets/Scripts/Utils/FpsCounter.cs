@@ -29,7 +29,7 @@ public class FpsCounter : MonoBehaviour
     void Update()
     {
         if(Time.unscaledDeltaTime > 0f)
-            smoothFps = Mathf.Lerp(smoothFps, 1f / Time.unscaledDeltaTime, Time.unscaledDeltaTime * 4f);
+            smoothFps = Mathf.Lerp(smoothFps, 1f / Time.unscaledDeltaTime, Time.unscaledDeltaTime * 2.4f);
 
         text.text = numStrings[Mathf.CeilToInt(smoothFps)];
 

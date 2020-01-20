@@ -43,30 +43,16 @@ public class MenuController : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (InputController.GetEscapeDown())
         {
             ApplicationController.QuitApplication();
         }
         else if (!pressedStart)
         {
-            if (EventSystem.current.IsPointerOverGameObject() || EventSystem.current.currentSelectedGameObject != null)
-                return;
-
-            if (Input.touchSupported && Input.touchCount > 0)
-            {
-                var touch = Input.GetTouch(0);
-                if (touch.phase == TouchPhase.Began)
-                {
-                    pressedStart = true;
-                }
-            }
-            else if (Input.GetMouseButtonDown(0))
+            if (InputController.GetTapDown(out Vector2 tapPos))
             {
                 pressedStart = true;
-            }
 
-            if (pressedStart)
-            {
                 ApplicationController.StartGame();
                 menuUI.Hide();
             }

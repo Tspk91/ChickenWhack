@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿// Copyright (c) 2020 Alejandro Martín Carrillo, All rights reserved.
+using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 
