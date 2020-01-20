@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/GameAssets/Scenes/MainScene.unity
+    path: Assets/Scenes/MainScene.unity
     guid: b79b6c8eef0dd4841a4bdefbc6527b59
   m_configObjects:
     com.unity.xr.arcore.PlayerSettings: {fileID: 11400000, guid: 4d2c8592fc2cd0c4e892e019434624a4,
