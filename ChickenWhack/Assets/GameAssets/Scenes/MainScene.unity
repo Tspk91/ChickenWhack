@@ -3113,7 +3113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetFps: 60
-  AR_initialScaledownFactor: 240
+  AR_initialScaledownFactor: 150
   AR_controller: {fileID: 305163055}
   loadingScreen: {fileID: 1686409249}
   inputController: {fileID: 622281745}
@@ -3135,8 +3135,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameAreaRadius: 27
   timeLimit: 90
-  scoreObjective: 15
-  chickenAmount: 15
+  scoreObjective: 12
+  chickenAmount: 20
   chickenManager: {fileID: 622281741}
   playerController: {fileID: 1990599758}
   gameplayUI: {fileID: 1069926077}
