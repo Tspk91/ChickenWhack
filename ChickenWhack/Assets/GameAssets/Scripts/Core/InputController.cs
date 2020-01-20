@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class InputController : MonoBehaviour
 {
-    public static bool IsLandscape { get { return Input.deviceOrientation == DeviceOrientation.LandscapeLeft || Input.deviceOrientation == DeviceOrientation.LandscapeRight; } }
+    public static bool IsLandscape { get { return Input.deviceOrientation == DeviceOrientation.LandscapeLeft || Input.deviceOrientation == DeviceOrientation.LandscapeRight || Input.deviceOrientation == DeviceOrientation.FaceUp || Input.deviceOrientation == DeviceOrientation.FaceDown; } }
 
     public static bool MultiTouch()
     {

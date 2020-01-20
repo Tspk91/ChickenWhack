@@ -45,7 +45,7 @@ public class PlayerInputController : MonoBehaviour
         {
             SetTarget(tapPos, true);
         }
-        else if(!Input.touchSupported && InputController.GetTap(out tapPos))
+        else if (InputController.GetTap(out tapPos))
         {
             SetTarget(tapPos, false);
         }

@@ -231,7 +231,7 @@ RectTransform:
   - {fileID: 2034145875}
   - {fileID: 284279331}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1454,7 +1454,7 @@ GameObject:
   - component: {fileID: 305163054}
   - component: {fileID: 305163055}
   m_Layer: 0
-  m_Name: AR Controller
+  m_Name: ARController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3074,7 +3074,6 @@ GameObject:
   - component: {fileID: 622281738}
   - component: {fileID: 622281744}
   - component: {fileID: 622281739}
-  - component: {fileID: 622281745}
   - component: {fileID: 622281742}
   - component: {fileID: 622281740}
   - component: {fileID: 622281741}
@@ -3116,7 +3115,7 @@ MonoBehaviour:
   AR_initialScaledownFactor: 150
   AR_controller: {fileID: 305163055}
   loadingScreen: {fileID: 1686409249}
-  inputController: {fileID: 622281745}
+  inputController: {fileID: 1509371142}
   menuController: {fileID: 622281742}
   gameController: {fileID: 622281740}
   gameOver: {fileID: 0}
@@ -3195,18 +3194,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   references: {fileID: 622281739}
---- !u!114 &622281745
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 622281737}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7917c82046de6ea4c9d2ec2d31edb465, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &627813195
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3593,7 +3580,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.018555557, y: 0.9533334}
   m_AnchorMax: {x: 0.08400001, y: 0.9533334}
-  m_AnchoredPosition: {x: 56.703125, y: -91.17999}
+  m_AnchoredPosition: {x: 56.703125, y: -91.180176}
   m_SizeDelta: {x: 112.7, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &734843134
@@ -4661,7 +4648,7 @@ Transform:
   - {fileID: 1379433284}
   - {fileID: 1265595363}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &985501573
 PrefabInstance:
@@ -6509,7 +6496,7 @@ Transform:
   - {fileID: 522811755}
   - {fileID: 1871567298}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1492505708
 PrefabInstance:
@@ -6589,9 +6576,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1509371141}
+  - component: {fileID: 1509371142}
   - component: {fileID: 1509371140}
   m_Layer: 0
-  m_Name: LeanTouch
+  m_Name: InputController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6635,8 +6623,20 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1509371142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1509371139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7917c82046de6ea4c9d2ec2d31edb465, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1513268560 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4931211907768612, guid: e88b7bb02ae149940a5a0cddf34fe370,
@@ -7930,7 +7930,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.018555557, y: 0.9533334}
   m_AnchorMax: {x: 0.08400001, y: 0.9533334}
-  m_AnchoredPosition: {x: 56.703125, y: -91.18}
+  m_AnchoredPosition: {x: 56.703125, y: -91.180176}
   m_SizeDelta: {x: 112.7, y: 183.38002}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1839369431
