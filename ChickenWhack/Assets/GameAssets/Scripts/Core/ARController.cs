@@ -199,15 +199,17 @@ public class ARController : MonoBehaviour
 
     private void PlacementUpdate()
     {
+        //Check for cancel placement
         if (InputController.GetEscapeDown())
         {
             CancelPlacement();
             return;
         }
 
+        //Get point at center of screen
         Vector2 screenPoint = AR_camera.ViewportToScreenPoint(new Vector2(0.5f, 0.5f));
 
-        if (raycastManager.Raycast(screenPoint, hits, TrackableType.Planes))
+        if (raycastManager.Raycast(screenPoint, hits, TrackableType.PlaneWithinPolygon))
         {
             if (state != AR_State.PLACING) //change state to placing
             {

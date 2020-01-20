@@ -27,7 +27,7 @@ public class HorizontalFovLocker : MonoBehaviour {
         float hFov = GetOppositeFov(cam.fieldOfView, InputController.IsLandscape ? 1f / aspect : aspect);
         landscapeFov = GetOppositeFov(hFov, InputController.IsLandscape ? aspect : 1f / aspect);
 
-        StartCoroutine(ScaleByOrientation());
+        ApplicationController.refs.StartCoroutine(ScaleByOrientation());
     }
 
     private float GetOppositeFov(float fov, float aspect)
