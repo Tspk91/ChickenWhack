@@ -9,7 +9,12 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class InputController : MonoBehaviour
 {
-    public static bool IsLandscape { get { return Input.deviceOrientation == DeviceOrientation.LandscapeLeft || Input.deviceOrientation == DeviceOrientation.LandscapeRight || Input.deviceOrientation == DeviceOrientation.FaceUp || Input.deviceOrientation == DeviceOrientation.FaceDown; } }
+    public static bool IsLandscape { get {
+            if (isLandscape.HasValue) return isLandscape.Value;
+            isLandscape = Input.deviceOrientation == DeviceOrientation.LandscapeLeft || Input.deviceOrientation == DeviceOrientation.LandscapeRight || Input.deviceOrientation == DeviceOrientation.FaceUp || Input.deviceOrientation == DeviceOrientation.FaceDown;
+            return isLandscape.Value; } }
+
+    public static event System.Action OnOrientationChanged = delegate { };
 
     public static bool MultiTouch()
     {
@@ -62,8 +67,13 @@ public class InputController : MonoBehaviour
     private bool tap = false;
     private Vector2 tapPos = Vector2.zero;
 
+    private static bool? isLandscape;
+    private DeviceOrientation lastOrientation;
+
     private void Update()
     {
+        isLandscape = null;
+
         if (tapDown)
             tapDown = false;
         if (tap)
@@ -111,5 +121,16 @@ public class InputController : MonoBehaviour
                 tap = true;
             }
         }
+
+        //Call events once all else was updated
+
+        DeviceOrientation orientation = Input.deviceOrientation;
+        if (orientation != lastOrientation)
+        {
+            OnOrientationChanged();
+            lastOrientation = orientation;
+        }
+
+
     }
 }
