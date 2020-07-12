@@ -23,8 +23,10 @@ public class GameController : MonoBehaviour
     public PlayerController playerController;
 
     public GameplayUI gameplayUI;
-    public GameObject gameplayObjects;
     public Camera gameplayCamera;
+    public GameObject gameplayObjects;
+    public GameObject portraitScreenScenery;
+	public GameObject landscapeScreenScenery;
 
     private uint loseCoroutine;
 
@@ -50,6 +52,18 @@ public class GameController : MonoBehaviour
     private void Awake()
     {
         SetObjectsActive(false);
+
+		if (!ApplicationController.refs.AR_controller.AR_Enabled)
+		{
+			portraitScreenScenery.SetActive(true);
+			gameplayCamera.GetComponent<HorizontalFovLocker>().onLandscapeShowStart += () => { landscapeScreenScenery.SetActive(true); };
+			gameplayCamera.GetComponent<HorizontalFovLocker>().onLandscapeHideEnd += () => { landscapeScreenScenery.SetActive(false); };
+		}
+		else
+		{
+			portraitScreenScenery.SetActive(false);
+			landscapeScreenScenery.SetActive(false);
+		}
     }
 
     //Activates the gameplay phase

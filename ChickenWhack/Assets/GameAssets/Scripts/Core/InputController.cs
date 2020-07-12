@@ -10,9 +10,14 @@ using UnityEngine.EventSystems;
 public class InputController : MonoBehaviour
 {
     public static bool IsLandscape { get {
-            if (isLandscape.HasValue) return isLandscape.Value;
-            isLandscape = Input.deviceOrientation == DeviceOrientation.LandscapeLeft || Input.deviceOrientation == DeviceOrientation.LandscapeRight || Input.deviceOrientation == DeviceOrientation.FaceUp || Input.deviceOrientation == DeviceOrientation.FaceDown;
-            return isLandscape.Value; } }
+            if (!isLandscape.HasValue)
+			{
+				DeviceOrientation orientation = Application.isMobilePlatform ? Input.deviceOrientation : (float)Screen.width / Screen.height > 1f ? DeviceOrientation.LandscapeLeft : DeviceOrientation.Portrait;
+				isLandscape = orientation ==
+					DeviceOrientation.LandscapeLeft || orientation == DeviceOrientation.LandscapeRight || orientation == DeviceOrientation.FaceUp || orientation == DeviceOrientation.FaceDown;
+			}
+            return isLandscape.Value;
+	} }
 
     public static event System.Action OnOrientationChanged = delegate { };
 
@@ -72,8 +77,6 @@ public class InputController : MonoBehaviour
 
     private void Update()
     {
-        isLandscape = null;
-
         if (tapDown)
             tapDown = false;
         if (tap)
@@ -123,14 +126,22 @@ public class InputController : MonoBehaviour
         }
 
         //Call events once all else was updated
-
-        DeviceOrientation orientation = Input.deviceOrientation;
-        if (orientation != lastOrientation)
+        if (Application.isMobilePlatform || Application.isEditor)
         {
-            OnOrientationChanged();
-            lastOrientation = orientation;
+            isLandscape = null;
+
+			DeviceOrientation currentOrientation;
+
+			if (Application.isMobilePlatform)
+				currentOrientation = Input.deviceOrientation;
+			else
+				currentOrientation = (float)Screen.width / Screen.height > 1f ? DeviceOrientation.LandscapeLeft : DeviceOrientation.Portrait;
+
+			if (currentOrientation != lastOrientation)
+            {
+                OnOrientationChanged();
+                lastOrientation = currentOrientation;
+            }
         }
-
-
     }
 }
