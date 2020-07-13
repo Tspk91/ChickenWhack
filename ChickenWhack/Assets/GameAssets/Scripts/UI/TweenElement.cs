@@ -19,7 +19,8 @@ public class TweenElement : MonoBehaviour
 
     public void TweenDown()
     {
-        StartCoroutine(TweenCoroutine(true));
+		if (gameObject.activeInHierarchy)
+			StartCoroutine(TweenCoroutine(true));
     }
 
     IEnumerator TweenCoroutine(bool reverse)

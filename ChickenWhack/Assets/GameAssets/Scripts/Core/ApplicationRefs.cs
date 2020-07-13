@@ -22,7 +22,5 @@ public class ApplicationRefs : MonoBehaviour
     public MenuController menuController;
     public GameController gameController;
 
-    public GameObject gameOver;
-
     public float transitionsDuration = 0.5f;
 }

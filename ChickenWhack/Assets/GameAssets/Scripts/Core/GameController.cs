@@ -22,6 +22,7 @@ public class GameController : MonoBehaviour
 
     public PlayerController playerController;
 
+	public GameOverUI gameOverUI;
     public GameplayUI gameplayUI;
     public Camera gameplayCamera;
     public GameObject gameplayObjects;
@@ -120,24 +121,30 @@ public class GameController : MonoBehaviour
 
         GameEnded = true;
         onGameEnded(true);
-        ApplicationController.ExitGame(GameExitType.WIN, 1f);
+        ApplicationController.ExitGame(GameExitType.WIN, 4.5f);
 
         this.DelayedAction(gameplayUI.Hide, 0.5f);
-    }
 
-    public void Lose()
+		this.DelayedAction(gameOverUI.ShowWin, 0.75f);
+		this.DelayedAction(gameOverUI.Hide, 4.5f);
+	}
+
+	public void Lose()
     {
         if (GameEnded)
             return;
 
         GameEnded = true;
         onGameEnded(false);
-        ApplicationController.ExitGame(GameExitType.LOSE, 2f);
+        ApplicationController.ExitGame(GameExitType.LOSE, 5f);
 
         this.DelayedAction(gameplayUI.Hide, 1.5f);
-    }
 
-    public void OnPressExit()
+		this.DelayedAction(gameOverUI.ShowLose, 1.75f);
+		this.DelayedAction(gameOverUI.Hide, 5f);
+	}
+
+	public void OnPressExit()
     {
         if (GameEnded)
             return;
