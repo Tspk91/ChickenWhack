@@ -1,5 +1,4 @@
 ﻿// Copyright (c) 2020 Alejandro Martín Carrillo, All rights reserved.
-using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -18,6 +17,7 @@ public class ApplicationRefs : MonoBehaviour
 
     public GameObject loadingScreen;
 
+	public AudioController audioController;
     public InputController inputController;
     public MenuController menuController;
     public GameController gameController;

@@ -37,7 +37,10 @@ public class ChickenAgent : MonoBehaviour
     //Speed multiplier when running respect to walking
     public float runSpeedMultiplier = 1.8f;
 
-    float sqrFleeRadiusInternal;
+	//Delay between hit and death
+	public float whackDelay = 0.15f;
+
+	float sqrFleeRadiusInternal;
     float sqrFleeFastRadiusInternal;
     float sqrFleeRelaxedRadiusInternal;
 
@@ -343,16 +346,19 @@ public class ChickenAgent : MonoBehaviour
     //Receive player hit
     public void Whack()
     {
-        if (!isDying)
+		if (!isDying)
         {
             isDying = true;
-            this.DelayedAction(WhackInternal, 0.15f);
+			manager.ChickenWhacked();
+			this.DelayedAction(DelayedWhack, whackDelay);
         }
     }
 
-    private void WhackInternal()
+    private void DelayedWhack()
     {
-        manager.ChickenWhacked(transform.position);
+		ApplicationController.refs.audioController.PlayEvent(AudioEvent.PLAY_WHACK);
+
+		manager.PlayWhackEffect(transform.position);
         Despawn();
     }
 

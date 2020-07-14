@@ -8,7 +8,8 @@ using UnityEngine;
 /// </summary>
 public static class InvokeUtility
 {
-    private static uint nextID = 0;
+	private const uint INVALID_ID = 0;
+    private static uint nextID = 1;
 
     private static Dictionary<uint, Coroutine> coroutinesByInvoke = new Dictionary<uint, Coroutine>();
     private static Dictionary<uint, object> objectsByInvoke = new Dictionary<uint, object>();
@@ -46,7 +47,10 @@ public static class InvokeUtility
 
     public static void CancelAction(this object obj, uint invoke)
     {
-        if (coroutinesByInvoke.TryGetValue(invoke, out Coroutine coroutine))
+		if (invoke == INVALID_ID)
+			return;
+
+		if (coroutinesByInvoke.TryGetValue(invoke, out Coroutine coroutine))
         {
             ApplicationController.refs.StopCoroutine(coroutine);
             RemoveInvoke(invoke);

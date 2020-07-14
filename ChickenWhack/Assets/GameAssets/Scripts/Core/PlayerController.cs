@@ -99,6 +99,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnGameEnded(bool win)
     {
+		this.CancelAllActions();
+
         canAttack = false;
         navigation.ResetPath();
         if (!win)
@@ -114,7 +116,7 @@ public class PlayerController : MonoBehaviour
 
             animator.SetTrigger(Random.value > 0.5f ? attack0AnimID : attack1AnimID);
 
-            this.DelayedAction(CheckAttack, 0.4f);
+			this.DelayedAction(CheckAttack, 0.4f);
         }
     }
 
@@ -127,15 +129,24 @@ public class PlayerController : MonoBehaviour
         //Check the attack did connect
         int hits = Physics.OverlapSphereNonAlloc(transform.position + transform.rotation * trigger.center, trigger.radius, hitArray, 1 << 0);
 
-        for (int i = 0; i < hits; i++)
-        {
-            ChickenAgent hitAgent = hitArray[i].GetComponent<ChickenAgent>();
-            //Hit the chicken
-            hitAgent.Whack();
-        }
-    }
+		if (hits > 0)
+		{
+			ApplicationController.refs.audioController.PlayEvent(AudioEvent.PLAY_IMPACT);
 
-    private void OnDrawGizmos()
+			for (int i = 0; i < hits; i++)
+			{
+				ChickenAgent hitAgent = hitArray[i].GetComponent<ChickenAgent>();
+				//Hit the chicken
+				hitAgent.Whack();
+			}
+		}
+		else
+		{
+			ApplicationController.refs.audioController.PlayEvent(AudioEvent.PLAY_SWING);
+		}
+	}
+
+	private void OnDrawGizmos()
     {
         if (!Application.isPlaying)
             return;

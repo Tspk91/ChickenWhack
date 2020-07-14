@@ -23,6 +23,8 @@ public class GameplayUI : BaseUI
 
     Color timeTextColor;
 
+	bool playingDangerSound;
+
     private void Awake()
     {
         gameController = ApplicationController.refs.gameController;
@@ -47,7 +49,13 @@ public class GameplayUI : BaseUI
         base.Hide();
 
         StopCoroutine(updateTimeCoroutine);
-    }
+
+		if (playingDangerSound)
+		{
+			ApplicationController.refs.audioController.PlayEvent(AudioEvent.STOP_TIMEDANGER);
+			playingDangerSound = false;
+		}
+	}
 
     private IEnumerator UpdateTime()
     {
@@ -58,6 +66,12 @@ public class GameplayUI : BaseUI
             //Danger color animation
             if (seconds <= dangerTime)
             {
+				if (!playingDangerSound)
+				{
+					ApplicationController.refs.audioController.PlayEvent(AudioEvent.START_TIMEDANGER);
+					playingDangerSound = true;
+				}
+
                 timeText.CrossFadeColor(Color.red, 0f, true, false);
 
                 if (seconds < 0)

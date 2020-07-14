@@ -52,12 +52,15 @@ public class ChickenManager : MonoBehaviour
         chickenFxPool.ClearObjects(x => x.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear));
     }
 
-    public void ChickenWhacked(Vector3 position)
+    public void ChickenWhacked()
     {
         onChickenWhacked();
-
-        var explosion = chickenFxPool.GetObject(explosionDuration);
-        explosion.transform.position = position;
-        explosion.Play();
     }
+
+	public void PlayWhackEffect(Vector3 position)
+	{
+		var explosion = chickenFxPool.GetObject(explosionDuration);
+		explosion.transform.position = position;
+		explosion.Play();
+	}
 }

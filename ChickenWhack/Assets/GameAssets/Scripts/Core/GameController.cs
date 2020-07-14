@@ -121,12 +121,14 @@ public class GameController : MonoBehaviour
 
         GameEnded = true;
         onGameEnded(true);
-        ApplicationController.ExitGame(GameExitType.WIN, 4.5f);
+        ApplicationController.ExitGame(GameExitType.WIN, 5f);
 
-        this.DelayedAction(gameplayUI.Hide, 0.5f);
+		ApplicationController.refs.audioController.PlayEvent(AudioEvent.PLAY_VICTORY);
+
+		this.DelayedAction(gameplayUI.Hide, 0.5f);
 
 		this.DelayedAction(gameOverUI.ShowWin, 0.75f);
-		this.DelayedAction(gameOverUI.Hide, 4.5f);
+		this.DelayedAction(gameOverUI.Hide, 5f);
 	}
 
 	public void Lose()
@@ -138,7 +140,9 @@ public class GameController : MonoBehaviour
         onGameEnded(false);
         ApplicationController.ExitGame(GameExitType.LOSE, 5f);
 
-        this.DelayedAction(gameplayUI.Hide, 1.5f);
+		ApplicationController.refs.audioController.PlayEvent(AudioEvent.PLAY_TIMEUP);
+
+		this.DelayedAction(gameplayUI.Hide, 1.5f);
 
 		this.DelayedAction(gameOverUI.ShowLose, 1.75f);
 		this.DelayedAction(gameOverUI.Hide, 5f);
