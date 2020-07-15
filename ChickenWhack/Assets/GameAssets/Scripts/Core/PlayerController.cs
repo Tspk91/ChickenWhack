@@ -116,7 +116,7 @@ public class PlayerController : MonoBehaviour
 
             animator.SetTrigger(Random.value > 0.5f ? attack0AnimID : attack1AnimID);
 
-			this.DelayedAction(CheckAttack, 0.4f);
+			this.DelayedAction(CheckAttack, 0.25f);
         }
     }
 

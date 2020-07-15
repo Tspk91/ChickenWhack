@@ -81,10 +81,12 @@ public class GameController : MonoBehaviour
         chickenManager.onChickenWhacked += OnChickenWhacked;
 
         loseCoroutine = this.DelayedAction(Lose, timeLimit);
-    }
 
-    //Deactivates the gameplay phase
-    public void StopGameplay()
+		ApplicationController.refs.audioController.PlayEvent(AudioEvent.PLAY_GAMEMUSIC);
+	}
+
+	//Deactivates the gameplay phase
+	public void StopGameplay()
     {
         enabled = false;
 
@@ -123,6 +125,7 @@ public class GameController : MonoBehaviour
         onGameEnded(true);
         ApplicationController.ExitGame(GameExitType.WIN, 5f);
 
+		ApplicationController.refs.audioController.PlayEvent(AudioEvent.STOP_MUSIC);
 		ApplicationController.refs.audioController.PlayEvent(AudioEvent.PLAY_VICTORY);
 
 		this.DelayedAction(gameplayUI.Hide, 0.5f);
@@ -140,6 +143,7 @@ public class GameController : MonoBehaviour
         onGameEnded(false);
         ApplicationController.ExitGame(GameExitType.LOSE, 5f);
 
+		ApplicationController.refs.audioController.PlayEvent(AudioEvent.STOP_MUSIC);
 		ApplicationController.refs.audioController.PlayEvent(AudioEvent.PLAY_TIMEUP);
 
 		this.DelayedAction(gameplayUI.Hide, 1.5f);
@@ -153,7 +157,9 @@ public class GameController : MonoBehaviour
         if (GameEnded)
             return;
 
-        GameEnded = true;
+		ApplicationController.refs.audioController.PlayEvent(AudioEvent.PLAY_BUTTON);
+
+		GameEnded = true;
         ApplicationController.ExitGame(GameExitType.MENU, 0f);
 
         gameplayUI.Hide();

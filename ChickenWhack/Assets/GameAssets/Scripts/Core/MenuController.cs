@@ -28,6 +28,8 @@ public class MenuController : MonoBehaviour
         menuCamera.gameObject.SetActive(true);
 
         pressedStart = false;
+
+		ApplicationController.refs.audioController.PlayEvent(AudioEvent.PLAY_MENUMUSIC);
     }
 
     public void Close()
@@ -51,6 +53,8 @@ public class MenuController : MonoBehaviour
         {
             if (InputController.GetTapDown(out Vector2 tapPos))
             {
+				ApplicationController.refs.audioController.PlayEvent(AudioEvent.PLAY_BUTTON);
+
                 pressedStart = true;
 
                 ApplicationController.StartGame();

@@ -56,7 +56,9 @@ public static class ApplicationController
 
     private static IEnumerator StartGameInternal(bool doPlacement)
     {
-        CameraFader.FadeDown();
+		refs.audioController.PlayEvent(AudioEvent.PLAY_SCENECHANGE);
+
+		CameraFader.FadeDown();
 
         yield return new WaitForSecondsRealtime(refs.transitionsDuration);
 
@@ -88,6 +90,8 @@ public static class ApplicationController
     private static IEnumerator ExitGameInternal(GameExitType exitType, float delay)
     {
         yield return new WaitForSecondsRealtime(delay);
+
+		refs.audioController.PlayEvent(AudioEvent.PLAY_SCENECHANGE);
 
         CameraFader.FadeDown();
 

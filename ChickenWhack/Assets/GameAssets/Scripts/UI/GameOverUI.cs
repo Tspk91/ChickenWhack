@@ -109,6 +109,8 @@ public class GameOverUI : BaseUI
 	{
 		yield return new WaitForSecondsRealtime(loseChickenWait);
 
+		ApplicationController.refs.audioController.PlayEvent(AudioEvent.PLAY_CHICKENFLY);
+
 		loseChicken.gameObject.SetActive(true);
 
 		float t = 0f;

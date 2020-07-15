@@ -54,6 +54,7 @@ MonoBehaviour:
   fleeRecoverDuration: 2
   fleeRadius: 10
   runSpeedMultiplier: 1.8
+  whackDelay: 0.4
 --- !u!195 &1732706395
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -252,13 +252,20 @@ public class ChickenAgent : MonoBehaviour
     {
         if (CheckFastFlee())
         {
-            navigation.speed = baseSpeed * runSpeedMultiplier;
-            animator.SetBool(walkAnimID, false);
-            animator.SetBool(runAnimID, true);
+			if (!animator.GetBool(runAnimID))
+			{
+				navigation.speed = baseSpeed * runSpeedMultiplier;
+				animator.SetBool(walkAnimID, false);
+				animator.SetBool(runAnimID, true);
+
+				ApplicationController.refs.audioController.PlayEvent(AudioEvent.PLAY_CHICKENFLY);
+			}
+
             if (computeDest)
                 SetDestination(GetFleeDestinationCandidate);
-        }
-        else if (!animator.GetBool(walkAnimID))
+
+		}
+		else if (!animator.GetBool(walkAnimID))
         {
             navigation.speed = baseSpeed;
             animator.SetBool(runAnimID, false);
