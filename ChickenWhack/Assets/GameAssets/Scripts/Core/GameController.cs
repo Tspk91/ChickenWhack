@@ -14,6 +14,11 @@ public class GameController : MonoBehaviour
 {
     public float gameAreaRadius = 40f;
 
+	public int minChickenAmount = 16;
+	public int maxChickenAmount = 64;
+	public int baseTimeLimit = 30;
+	public int timeLimitPerMinChickenAmount = 30;
+
     public int timeLimit = 30;
     public int scoreObjective = 10;
     public int chickenAmount = 10;
@@ -115,6 +120,13 @@ public class GameController : MonoBehaviour
         gameplayObjects.SetActive(state);
         gameplayCamera.gameObject.SetActive(state);
     }
+
+	public void SetChickenAmount(int amount)
+	{
+		chickenAmount = amount;
+		scoreObjective = amount;
+		timeLimit = baseTimeLimit + (int)(((float)amount / minChickenAmount) * timeLimitPerMinChickenAmount);
+	}
 
     public void Win()
     {

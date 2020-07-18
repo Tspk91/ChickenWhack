@@ -17,7 +17,11 @@ public class PlayerController : MonoBehaviour
 
     public static Vector3 PlayerVelocity { get; private set; }
 
-    Animator animator;
+	public ParticleSystem impactEffectPrefab;
+
+	private GenericPool<ParticleSystem> impactEffectPool;
+
+	Animator animator;
 
     //ids for faster execution
     int speedAnimID = Animator.StringToHash("MoveSpeed");
@@ -34,10 +38,15 @@ public class PlayerController : MonoBehaviour
 
     float smoothVelocity;
 
+	float navSpeed;
+
     private void Awake()
     {
-        animator = GetComponent<Animator>();
+		impactEffectPool = new GenericPool<ParticleSystem>(impactEffectPrefab, 3);
+
+		animator = GetComponent<Animator>();
         navigation = GetComponent<NavMeshAgent>();
+		navSpeed = navigation.speed;
         trigger = GetComponent<SphereCollider>();
 
         path = new NavMeshPath();
@@ -52,7 +61,9 @@ public class PlayerController : MonoBehaviour
         canAttack = true;
         smoothVelocity = 0f;
 
-        navigation.Warp(Vector3.zero);
+		navigation.speed = navSpeed;
+
+		navigation.Warp(Vector3.zero);
     }
 
     private void OnDisable()
@@ -65,7 +76,7 @@ public class PlayerController : MonoBehaviour
         UpdateStaticVars();
 
         //Set animation speed parameter with smoothing
-        smoothVelocity = Mathf.Lerp(smoothVelocity, navigation.velocity.magnitude, Time.deltaTime * 4f);
+        smoothVelocity = Mathf.Lerp(smoothVelocity, navigation.velocity.magnitude, Time.deltaTime * 5f);
         animator.SetFloat(speedAnimID, smoothVelocity / navigation.speed);
     }
 
@@ -117,6 +128,8 @@ public class PlayerController : MonoBehaviour
             animator.SetTrigger(Random.value > 0.5f ? attack0AnimID : attack1AnimID);
 
 			this.DelayedAction(CheckAttack, 0.25f);
+
+			navigation.speed = 0f;
         }
     }
 
@@ -135,15 +148,21 @@ public class PlayerController : MonoBehaviour
 
 			for (int i = 0; i < hits; i++)
 			{
-				ChickenAgent hitAgent = hitArray[i].GetComponent<ChickenAgent>();
+				Collider hit = hitArray[i];
 				//Hit the chicken
-				hitAgent.Whack();
+				hit.GetComponent<ChickenAgent>().Whack();
+
+				var effect = impactEffectPool.GetObject(4f);
+				effect.transform.position = Vector3.Lerp(hit.transform.position, hit.ClosestPoint(transform.position), 0.66f) + Vector3.up * 1.5f;
+				effect.Play();
 			}
 		}
 		else
 		{
 			ApplicationController.refs.audioController.PlayEvent(AudioEvent.PLAY_SWING);
 		}
+
+		navigation.speed = navSpeed;
 	}
 
 	private void OnDrawGizmos()

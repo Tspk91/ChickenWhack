@@ -41,12 +41,9 @@ public class AudioController : MonoBehaviour
 	public AudioAsset menuMusic;
 	public AudioAsset gameMusic;
 
-	[SerializeField]
-	private AudioSource musicSource;
-	[SerializeField]
-	private AudioSource oneShotSource;
-	[SerializeField]
-	private AudioSource timeDangerSource;
+	public AudioSource musicSource;
+	public AudioSource oneShotSource;
+	public AudioSource timeDangerSource;
 
 	private void PlayAudioAsset(AudioAsset asset)
 	{

@@ -1851,6 +1851,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8027c845706053468e8e1ddec0a6ac8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  impactEffectPrefab: {fileID: 3908905006435770293, guid: f6816285968592d4b8b5093168ab4835,
+    type: 3}
 --- !u!114 &676158518310607850
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1896,9 +1898,9 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 2.4
   m_Speed: 7.5
-  m_Acceleration: 40
-  avoidancePriority: 50
-  m_AngularSpeed: 1000
+  m_Acceleration: 20
+  avoidancePriority: 0
+  m_AngularSpeed: 800
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -1918,8 +1920,8 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.5
-  m_Center: {x: 0, y: 1, z: 1.5}
+  m_Radius: 1.75
+  m_Center: {x: 0, y: 1, z: 1.75}
 --- !u!54 &3464938783469935492
 Rigidbody:
   m_ObjectHideFlags: 0
