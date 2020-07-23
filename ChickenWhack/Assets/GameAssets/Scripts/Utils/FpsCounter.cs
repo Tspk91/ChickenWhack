@@ -9,12 +9,20 @@ using UnityEngine.UI;
 /// </summary>
 public class FpsCounter : MonoBehaviour
 {
+	public bool onlyDevelopmentBuild = true;
+
     Text text;
 
     string[] numStrings = new string[256]; //cached strings to avoid gc
 
     void Start()
     {
+		if (onlyDevelopmentBuild && !Application.isEditor && !Debug.isDebugBuild)
+		{
+			Destroy(gameObject);
+			return;
+		}
+
         text = GetComponentInChildren<Text>();
         text.enabled = false;
 

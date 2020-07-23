@@ -12,9 +12,8 @@ public class InputController : MonoBehaviour
     public static bool IsLandscape { get {
             if (!isLandscape.HasValue)
 			{
-				DeviceOrientation orientation = Application.isMobilePlatform ? Input.deviceOrientation : (float)Screen.width / Screen.height > 1f ? DeviceOrientation.LandscapeLeft : DeviceOrientation.Portrait;
-				isLandscape = orientation ==
-					DeviceOrientation.LandscapeLeft || orientation == DeviceOrientation.LandscapeRight || orientation == DeviceOrientation.FaceUp || orientation == DeviceOrientation.FaceDown;
+				ScreenOrientation orientation = Application.isMobilePlatform ? Screen.orientation : (float)Screen.width / Screen.height > 1f ? ScreenOrientation.LandscapeLeft : ScreenOrientation.Portrait;
+				isLandscape = orientation == ScreenOrientation.LandscapeLeft || orientation == ScreenOrientation.LandscapeRight;
 			}
             return isLandscape.Value;
 	} }
@@ -73,75 +72,78 @@ public class InputController : MonoBehaviour
     private Vector2 tapPos = Vector2.zero;
 
     private static bool? isLandscape;
-    private DeviceOrientation lastOrientation;
+    private ScreenOrientation lastOrientation;
 
     private void Update()
     {
-        if (tapDown)
-            tapDown = false;
-        if (tap)
-            tap = false;
+		if (Application.isMobilePlatform || Application.isEditor)
+		{
+			isLandscape = null;
 
-        if (Input.touchSupported) //Touch detection
-        {
-            if (EventSystem.current.IsPointerOverGameObject() || EventSystem.current.currentSelectedGameObject != null) //UI block
-            {
-                EventSystem.current.SetSelectedGameObject(null);
-                return;
-            }
-
-            if (Input.touchCount == 1)
-            {
-                var touch = Input.GetTouch(0);
-
-                tapPos = touch.position;
-
-                if (touch.phase == TouchPhase.Began)
-                {
-                    tapDown = true;                    
-                }
-                else
-                {
-                    tap = true;
-                }
-            }
-        }
-        else //Mouse detection
-        {
-            if (EventSystem.current.IsPointerOverGameObject() || EventSystem.current.alreadySelecting) //UI block
-            {
-                return;
-            }
-
-            tapPos = Input.mousePosition;
-
-            if (Input.GetMouseButtonDown(0))
-            {
-                tapDown = true;
-            }
-            else if (Input.GetMouseButton(0))
-            {
-                tap = true;
-            }
-        }
-
-        //Call events once all else was updated
-        if (Application.isMobilePlatform || Application.isEditor)
-        {
-            isLandscape = null;
-
-			DeviceOrientation currentOrientation;
+			ScreenOrientation currentOrientation;
 
 			if (Application.isMobilePlatform)
-				currentOrientation = Input.deviceOrientation;
+				currentOrientation = Screen.orientation;
 			else
-				currentOrientation = (float)Screen.width / Screen.height > 1f ? DeviceOrientation.LandscapeLeft : DeviceOrientation.Portrait;
+				currentOrientation = (float)Screen.width / Screen.height > 1f ? ScreenOrientation.LandscapeLeft : ScreenOrientation.Portrait;
 
 			if (currentOrientation != lastOrientation)
-            {
-                OnOrientationChanged();
-                lastOrientation = currentOrientation;
-            }
-        }
+			{
+				OnOrientationChanged();
+				lastOrientation = currentOrientation;
+			}
+		}
+
+		TapDetection();
     }
+
+	private void TapDetection()
+	{
+		if (tapDown)
+			tapDown = false;
+		if (tap)
+			tap = false;
+
+		if (Input.touchSupported) //Touch detection
+		{
+			if (EventSystem.current.IsPointerOverGameObject() || EventSystem.current.currentSelectedGameObject != null) //UI block
+			{
+				EventSystem.current.SetSelectedGameObject(null);
+				return;
+			}
+
+			var touch = LeanTouch.GetFingers(false, false, 1);
+			if (touch != null)
+			{
+				tapPos = touch[0].ScreenPosition;
+
+				if (touch[0].Tap)
+				{
+					tapDown = true;
+				}
+				else
+				{
+					tap = true;
+				}
+			}
+		}
+		else //Mouse detection
+		{
+			if (EventSystem.current.IsPointerOverGameObject() || EventSystem.current.alreadySelecting) //UI block
+			{
+				return;
+			}
+
+			tapPos = Input.mousePosition;
+
+			if (Input.GetMouseButtonDown(0))
+			{
+				tapDown = true;
+			}
+			else if (Input.GetMouseButton(0))
+			{
+				tap = true;
+			}
+		}
+	}
 }

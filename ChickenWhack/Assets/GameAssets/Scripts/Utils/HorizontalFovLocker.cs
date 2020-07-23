@@ -21,6 +21,8 @@ public class HorizontalFovLocker : MonoBehaviour {
 
     private Coroutine scalingCoroutine;
 
+	private bool lastLandscape;
+
 	private void Awake()
 	{
 		if (!Application.isMobilePlatform && !Application.isEditor)
@@ -36,12 +38,9 @@ public class HorizontalFovLocker : MonoBehaviour {
 		landscapeFov = Mathf.Max(minVerticalFov, GetOppositeFov(targetHorizontalFov, isLandscape ? aspect : 1f / aspect));
 
 		InputController.OnOrientationChanged += ScaleByOrientation;
+
+		lastLandscape = isLandscape;
 	}
-
-	private void Start()
-    {
-
-    }
 
     private void OnEnable()
     {
@@ -60,8 +59,14 @@ public class HorizontalFovLocker : MonoBehaviour {
 
     private void ScaleByOrientation()
     {
-        if (!ApplicationController.refs.AR_controller.AR_Enabled)
+        if (!ApplicationController.refs.AR_controller.AR_Enabled &&
+			InputController.IsLandscape != lastLandscape)
         {
+			lastLandscape = InputController.IsLandscape;
+
+			if (scalingCoroutine != null)
+				ApplicationController.refs.StopCoroutine(scalingCoroutine);
+
             scalingCoroutine = ApplicationController.refs.StartCoroutine(ScalingCoroutine(InputController.IsLandscape));
         }
     }

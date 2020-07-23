@@ -52,8 +52,8 @@ MonoBehaviour:
   wanderCenteringForce: 0.6
   wanderRadius: 8
   fleeRecoverDuration: 2
-  fleeRadius: 10
-  runSpeedMultiplier: 2.4
+  fleeRadius: 11
+  runSpeedMultiplier: 2.5
   whackDelay: 0.4
 --- !u!195 &1732706395
 NavMeshAgent:
