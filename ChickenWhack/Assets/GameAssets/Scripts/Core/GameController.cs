@@ -59,21 +59,22 @@ public class GameController : MonoBehaviour
     {
         SetObjectsActive(false);
 
+		portraitScreenScenery.SetActive(false);
+		landscapeScreenScenery.SetActive(false);
+    }
+
+	private void Start()
+	{
 		if (!ApplicationController.refs.AR_controller.AR_Enabled)
 		{
 			portraitScreenScenery.SetActive(true);
 			gameplayCamera.GetComponent<HorizontalFovLocker>().onLandscapeShowStart += () => { landscapeScreenScenery.SetActive(true); };
 			gameplayCamera.GetComponent<HorizontalFovLocker>().onLandscapeHideEnd += () => { landscapeScreenScenery.SetActive(false); };
 		}
-		else
-		{
-			portraitScreenScenery.SetActive(false);
-			landscapeScreenScenery.SetActive(false);
-		}
-    }
+	}
 
-    //Activates the gameplay phase
-    public void StartGameplay()
+	//Activates the gameplay phase
+	public void StartGameplay()
     {
         startTimeStamp = Time.time;
 
